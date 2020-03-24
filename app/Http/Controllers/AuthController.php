@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\User;
+use Carbon\Carbon;
+use App\Http\Resources\User as UserResource;
 
 class AuthController extends Controller
 {
@@ -14,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login','register']]);
     }
 
     /**
@@ -22,7 +25,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
         $credentials = request(['email', 'password']);
 
@@ -30,7 +33,38 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        return (new UserResource($request->user()))->additional([
+            'meta' => [
+                'token' => $token,
+            ],
+        ]);
+    }
+
+    public function register(Request $request)
+    {
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'gender' => $request->gender,
+            'birthdate' => Carbon::parse($request->birthdate)->format('Y.m.d H:i:s'),
+            'address' => $request->address,
+            'country' => $request->country,
+            'password' => bcrypt($request->password)
+        ]);
+
+        $credentials = request(['email', 'password']);
+
+        if (! $token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return (new UserResource($request->user()))->additional([
+            'meta' => [
+                'token' => $token,
+            ],
+        ]);
+
     }
 
     /**
@@ -38,9 +72,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
+    public function user(Request $request)
     {
-        return response()->json(auth()->user());
+        return new UserResource($request->user());
     }
 
     /**
@@ -51,8 +85,6 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
     }
 
     /**
