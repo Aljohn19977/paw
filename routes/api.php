@@ -30,5 +30,5 @@ Route::group([
     Route::get('auth/user', 'AuthController@user');
 
     Route::post('/addpet', 'PetController@addpet');
-
+    Route::get('/getUserPet', 'PetController@getUserPet');
 });

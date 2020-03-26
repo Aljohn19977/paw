@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Pet;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\Pet as PetResource;
 
 class PetController extends Controller
 {
@@ -32,5 +33,12 @@ class PetController extends Controller
         $pet->description = $request->description;
         $pet->save();
 
+    }
+
+    public function getUserPet(Request $request)
+    {
+        $pet = Pet::get();
+
+        return PetResource::collection($pet);
     }
 }
