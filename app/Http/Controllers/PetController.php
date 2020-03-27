@@ -35,10 +35,10 @@ class PetController extends Controller
 
     }
 
-    public function getUserPet(Request $request)
+    public function getUserPet($user)
     {
-        $pet = Pet::get();
-
+        $pet = Pet::where('user_id','=',$user)->get();
+        // return $user;
         return PetResource::collection($pet);
     }
 }
