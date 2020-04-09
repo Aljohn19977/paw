@@ -7,12 +7,12 @@ use App\Pet;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Pet as PetResource;
+use Illuminate\Support\Facades\Response;
 
 class PetController extends Controller
 {
     public function addpet(Request $request)
     {
-       
         $pet = new Pet;
 
         $file_data = $request->image;
@@ -33,12 +33,32 @@ class PetController extends Controller
         $pet->description = $request->description;
         $pet->save();
 
+        if($request->traits != null){
+            foreach($request->traits as $key){
+
+                $pet = Pet::find($pet->id);
+                $pet->addTraits()->attach($key['id'],['value'=>$key['value']]);
+
+            }
+        }
+
     }
 
     public function getUserPet($user)
     {
         $pet = Pet::where('user_id','=',$user)->get();
-        // return $user;
         return PetResource::collection($pet);
+    }
+
+    public function getPet($pet)
+    {
+        $pet = Pet::with('tags','user','traits')->findOrfail($pet);
+        return Response::json($pet);
+    }
+
+    public function getUserPetCount($user)
+    {
+        $pet = Pet::where('user_id','=',$user)->count();
+        return Response::json($pet);
     }
 }

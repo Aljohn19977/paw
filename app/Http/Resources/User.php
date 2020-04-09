@@ -22,6 +22,8 @@ class User extends JsonResource
             'gender' => $this->gender,
             'address' => $this->address,
             'birthdate' => $this->birthdate,
+            'profile_picture' => $this->profile_picture_id,
+            'cover_photo' => $this->cover_photo_id,
             'country' => $this->country,
             'registered_at' => $this->created_at,
         ];

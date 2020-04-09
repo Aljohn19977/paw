@@ -53,17 +53,17 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
-        $credentials = request(['email', 'password']);
+        // $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        // if (! $token = auth()->attempt($credentials)) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
 
-        return (new UserResource($request->user()))->additional([
-            'meta' => [
-                'token' => $token,
-            ],
-        ]);
+        // return (new UserResource($request->user()))->additional([
+        //     'meta' => [
+        //         'token' => $token,
+        //     ],
+        // ]);
 
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Pet extends JsonResource
+class Post extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +16,12 @@ class Pet extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'gender' => $this->gender,
-            'birthdate' => $this->birthdate,
-            'breed' => $this->breed,
+            'title' => $this->title,
+            'content' => $this->content,
             'image' => $this->image,
-            'description' => $this->description,
-            'post'=> $this->tags
+            'tag' => $this->pets,
+            'user' => $this->user,
+            'date_posted' => $this->created_at->diffForHumans(),
         ];
     }
 }
